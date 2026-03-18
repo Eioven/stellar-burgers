@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import '../../index.css';
 import styles from './app.module.css';
 import {
@@ -36,6 +36,7 @@ import { useAppDispatch, useAppSelector } from '../../services/store';
 
 export const App = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const location = useLocation();
   const backgroundLocation = location.state?.background;
   const isModalOpened = useAppSelector(selectIsModalOpened);
@@ -139,7 +140,7 @@ export const App = () => {
         />
       </Routes>
 
-      {isModalOpened && backgroundLocation && (
+      {backgroundLocation && (
         <Routes>
           <Route
             path='/ingredients/:id'
@@ -148,6 +149,7 @@ export const App = () => {
                 title={'Описание ингредиента'}
                 onClose={() => {
                   dispatch(closeModal());
+                  navigate(-1);
                 }}
               >
                 <IngredientDetails />
@@ -162,6 +164,7 @@ export const App = () => {
                   title={'Заказ'}
                   onClose={() => {
                     dispatch(closeModal());
+                    navigate(-1);
                   }}
                 >
                   <OrderInfo />
@@ -176,6 +179,7 @@ export const App = () => {
                 title={'Заказ'}
                 onClose={() => {
                   dispatch(closeModal());
+                  navigate(-1);
                 }}
               >
                 <OrderInfo />

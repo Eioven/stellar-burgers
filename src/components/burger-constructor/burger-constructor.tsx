@@ -25,7 +25,7 @@ export const BurgerConstructor: FC = () => {
       return navigate('/login', { replace: true });
     }
 
-    if (constructorItems.bun._id && constructorItems.ingredients.length) {
+    if (constructorItems.bun._id) {
       const ingredientsIds = constructorItems.ingredients.map(
         (item) => item._id
       );

@@ -68,25 +68,29 @@ const stellarBurgerSlice = createSlice({
   name: 'stellarBurger',
   initialState,
   reducers: {
-    addIngredient(state, action: PayloadAction<TIngredient>) {
-      if (action.payload.type === 'bun') {
-        state.constructorItems.bun = action.payload;
-      } else {
-        state.constructorItems.ingredients.push({
-          ...action.payload,
-          uniqueId: uuidv4()
-        });
-      }
+    addIngredient: {
+      reducer: (
+        state,
+        action: PayloadAction<TIngredient | TIngredientUnique>
+      ) => {
+        if (action.payload.type === 'bun') {
+          state.constructorItems.bun = action.payload;
+        } else {
+          state.constructorItems.ingredients.push(
+            action.payload as TIngredientUnique
+          );
+        }
+      },
+      prepare: (ingredient: TIngredient) => ({
+        payload:
+          ingredient.type === 'bun'
+            ? ingredient
+            : { ...ingredient, uniqueId: uuidv4() }
+      })
     },
     closeOrderRequest(state) {
       state.orderRequest = false;
       state.orderModalData = null;
-      state.constructorItems = {
-        bun: {
-          price: 0
-        },
-        ingredients: []
-      };
     },
     removeOrders(state) {
       state.orders.length = 0;
@@ -165,6 +169,12 @@ const stellarBurgerSlice = createSlice({
       .addCase(fetchNewOrder.fulfilled, (state, action) => {
         state.orderModalData = action.payload.order;
         state.orderRequest = false;
+        state.constructorItems = {
+          bun: {
+            price: 0
+          },
+          ingredients: []
+        };
       })
       .addCase(fetchLoginUser.pending, (state) => {
         state.loading = true;
@@ -176,6 +186,8 @@ const stellarBurgerSlice = createSlice({
       .addCase(fetchLoginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.isAuthenticated = true;
+        state.user.name = action.payload.user.name;
+        state.user.email = action.payload.user.email;
       })
       .addCase(fetchRegisterUser.pending, (state) => {
         state.loading = true;
@@ -187,6 +199,8 @@ const stellarBurgerSlice = createSlice({
       .addCase(fetchRegisterUser.fulfilled, (state, action) => {
         state.loading = false;
         state.isAuthenticated = true;
+        state.user.name = action.payload.user.name;
+        state.user.email = action.payload.user.email;
       })
       .addCase(getUserThunk.pending, (state) => {
         state.loading = true;

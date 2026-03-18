@@ -2,7 +2,6 @@ import { FC, SyntheticEvent, useEffect } from 'react';
 import { RegisterUI } from '@ui-pages';
 import {
   fetchRegisterUser,
-  getUserThunk,
   removeErrorText,
   selectErrorText,
   selectLoading
@@ -39,7 +38,6 @@ export const Register: FC = () => {
       .then((payload) => {
         localStorage.setItem('refreshToken', payload.refreshToken);
         setCookie('accessToken', payload.accessToken);
-        dispatch(getUserThunk());
       });
   };
 
